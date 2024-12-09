@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
-const connectDb = () => {
+
+const connectDB = () => {
   mongoose
-    .connect("mongodb://127.0.0.1:27017/linkedIn-dev")
+    .connect(process.env.MONGODB_URI)
     .then(() => {
       console.log("connected");
     })
@@ -11,4 +12,4 @@ const connectDb = () => {
     });
 };
 
-module.exports = connectDb;
+module.exports = connectDB;
