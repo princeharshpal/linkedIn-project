@@ -2,18 +2,20 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const connectDB = require("./config/db");
-const mongoose = require("mongoose");
 const User = require("./models/user.model");
-const { body, validationResult } = require("express-validator");
-const userRoutes = require("./routes/user.routes")
+const userRoutes = require("./routes/user.routes");
+const path = require("path");
+const cookieParser = require("cookie-parser");
 
 connectDB();
 
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.use("/users", userRoutes)
+app.use("/users", userRoutes);
 
 app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;

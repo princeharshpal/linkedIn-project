@@ -61,18 +61,17 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-userSchema.statics.hashPassword = async (password) => {
-  // maybe statics comes in place of methods
-  return await bcrypt.hash(password, 10);
-};
-
-userSchema.statics.comparePassword = async (password) => {
-  return await bcrypt.compare(password, this.password);
-};
-
-userSchema.statics.generateAuthToken = () => {
+userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
   return token;
 };
 
-module.exports = mongoose.model("User", userSchema);
+userSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+userSchema.statics.hashPassword = async function (password) {
+  return await bcrypt.hash(password, 10);
+};
+
+module.exports = mongoose.model("userModel", userSchema);
