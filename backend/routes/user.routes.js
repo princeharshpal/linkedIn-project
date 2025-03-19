@@ -1,38 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const { body } = require("express-validator");
-const userController = require("../controllers/user.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const userController = require("../controllers/user.controllers");
+const multer = require("multer");
 
-router.get("/register", (req, res) => {
-  res.render("signup");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
 });
 
-router.post(
-  "/register",
-  [
-    body("email").trim().isEmail().withMessage("Invalid Email"),
-    body("username")
-      .isLength({ min: 3 })
-      .withMessage("Username must be 3 characters long"),
-    body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be 6 characters long"),
-  ],
-  userController.registerUser
-);
+const upload = multer({ storage: storage });
 
-router.post(
-  "/login",
-  [
-    body("email").isEmail().withMessage("Invalid Email"),
-    body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be 6 characters long"),
-  ],
-  userController.loginUser
-);
+router.route("/register").post(userController.register);
 
-router.get("/profile", authMiddleware.authUser, userController.getUserProfile);
+router.route("/login").post(userController.login);
+
+router
+  .route("/update_profile_picture")
+  .post(upload.single("profile_picture"), userController.uploadProfilePicture);
+
+router.route("/user_update").post(userController.updateUserProfile)
+
+router.route("/get_user_and_profile").get(userController.getUserAndProfile)
+
 
 module.exports = router;
