@@ -22,9 +22,14 @@ router
   .route("/update_profile_picture")
   .post(upload.single("profile_picture"), userController.uploadProfilePicture);
 
-router.route("/user_update").post(userController.updateUserProfile)
+router.route("/user_update").post(userController.updateUserProfile);
 
-router.route("/get_user_and_profile").get(userController.getUserAndProfile)
+router.route("/get_user_and_profile").get(userController.getUserAndProfile);
 
+router.route("/update_profile_data").post(userController.updateProfileData);
+
+router.route("/user/get_all_users").get(userController.getAllUserProfile);
+
+router.route("/user/:id/download_profile").get(userController.downloadProfile);
 
 module.exports = router;
